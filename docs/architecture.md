@@ -33,9 +33,17 @@ PENDING
 ├─ payment success → PAID
 │                    └─ cancel → CANCELLED
 └─ payment failure → PAYMENT_FAILED
+
+PAYMENT_FAILED
+├─ retry success → PAID
+└─ retry failure → PAYMENT_FAILED
 ```
 
-`PAYMENT_FAILED` 이후 재결제가 가능한지는 미확정이다. 재고 차감 시점과 취소 시간 제한 역시 [Open Question](requirements.md#open-question)으로 남겨 둔다.
+`PAYMENT_FAILED` 이후 동일 주문의 재결제를 허용한다. 동일 주문의 성공 결제는 한 번만 가능하다.
+
+재고는 주문 생성 시점에 차감하고 미결제 중 유지한다. 주문 실패 시 즉시 복구하며 재결제에도 같은 처리 원칙을 적용한다. 주문 취소 시에는 구매 수량만큼 복구한다.
+
+취소 가능 시간은 1시간이며, 쿠폰 사용은 결제 진행 중 확정한다. 취소 시간의 기준점과 경계, 주문 실패의 의미와 재결제 시 재고 재차감 흐름, 쿠폰의 정확한 사용 확정 시점과 이력 처리는 [Open Question](requirements.md#open-question)으로 남겨 둔다. 세부 사항 확인 전에는 추가 상태나 전이를 정의하지 않는다.
 
 ## 예정 QA 검증 계층
 
